@@ -1,0 +1,12 @@
+{
+  "name": "agriconnect",
+  "version": "1.0.0",
+  "description": "AgriConnect - Smart Farmer Marketplace",
+  "scripts": {
+    "install-all": "cd backend && npm install && cd ../frontend && npm install",
+    "start-backend": "cd backend && npm run dev",
+    "start-frontend": "cd frontend && npm start"
+  },
+  "keywords": ["agriculture", "farmer", "marketplace", "Karnataka"],
+  "author": "AgriConnect"
+}

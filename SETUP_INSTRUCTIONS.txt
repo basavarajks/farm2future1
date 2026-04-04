@@ -1,0 +1,277 @@
+# 🌾 AgriConnect — Complete Setup Guide
+# Windows 11 + VS Code — Step by Step
+
+=======================================================
+  WHAT YOU ARE BUILDING
+=======================================================
+
+AgriConnect is a full-stack web app for farmers with:
+  ✅ Live crop prices from all APMC markets in Karnataka
+  ✅ Smart sell/hold recommendation based on price trends
+  ✅ 12-month price history charts per crop
+  ✅ Perishable crop fast-sell alerts
+  ✅ Farmer crop listings (post crops for sale)
+  ✅ Company/industry buyer directory
+  ✅ Unified search (markets + listings + buyers)
+  ✅ Farmer and Buyer registration/login
+
+=======================================================
+  STEP 1 — INSTALL NODE.JS
+=======================================================
+
+1. Open your browser and go to:
+   https://nodejs.org
+
+2. Click the "LTS" (Long Term Support) download button
+   (It will say something like "20.x.x LTS")
+
+3. Run the downloaded installer (.msi file)
+   → Click Next → Accept License → Keep all defaults → Install
+
+4. After install, RESTART your computer once.
+
+5. Verify installation:
+   - Press Windows key + R
+   - Type: cmd
+   - Press Enter
+   - In the black window, type:
+     node --version
+   - You should see something like: v20.x.x
+   - Also type:
+     npm --version
+   - You should see: 10.x.x
+
+   ✅ If you see version numbers, Node.js is installed correctly.
+
+=======================================================
+  STEP 2 — OPEN THE PROJECT IN VS CODE
+=======================================================
+
+1. Open VS Code
+
+2. Go to File → Open Folder
+
+3. Navigate to and select the "agriconnect" folder
+   (wherever you saved the project files)
+
+4. You should see this folder structure in VS Code:
+   agriconnect/
+   ├── backend/
+   │   ├── server.js
+   │   ├── db.js
+   │   └── package.json
+   └── frontend/
+       ├── public/
+       │   └── index.html
+       ├── src/
+       │   ├── components/
+       │   ├── context/
+       │   ├── pages/
+       │   ├── utils/
+       │   ├── App.js
+       │   ├── index.js
+       │   └── index.css
+       └── package.json
+
+=======================================================
+  STEP 3 — OPEN TWO TERMINALS IN VS CODE
+=======================================================
+
+In VS Code, open a terminal:
+  → Go to menu: Terminal → New Terminal
+
+You will need TWO separate terminals.
+To open a second one, click the "+" icon in the terminal panel.
+
+=======================================================
+  STEP 4 — SET UP AND START THE BACKEND
+=======================================================
+
+In TERMINAL 1, type these commands one by one:
+
+   cd backend
+   npm install
+   npm run dev
+
+You should see:
+   ✅ AgriConnect Backend running on http://localhost:5000
+      Demo Farmer:  farmer@demo.com / demo123
+      Demo Buyer:   company@demo.com / demo123
+
+KEEP THIS TERMINAL OPEN AND RUNNING.
+Do NOT close it.
+
+=======================================================
+  STEP 5 — SET UP AND START THE FRONTEND
+=======================================================
+
+In TERMINAL 2, type these commands one by one:
+
+   cd frontend
+   npm install
+
+   (This will take 3-5 minutes the first time — be patient)
+
+   npm start
+
+After a minute, your browser will automatically open:
+   http://localhost:3000
+
+You will see the AgriConnect homepage! 🎉
+
+=======================================================
+  STEP 6 — TEST THE APPLICATION
+=======================================================
+
+Try these things to test everything works:
+
+--- TEST 1: Market Prices ---
+1. Click "Market Prices" in the navbar
+2. Click any crop (e.g., "Tomato")
+3. You should see:
+   - A green recommendation box
+   - All 12 market prices sorted best to worst
+   - A price history chart
+
+--- TEST 2: Search ---
+1. Click "Search" in the navbar
+2. Type "Onion" and click Search
+3. You should see markets, listings, and buyers tabs
+
+--- TEST 3: Farmer Login ---
+1. Click "Login" in the navbar
+2. Enter: farmer@demo.com / demo123
+3. You should be taken to the Dashboard
+
+--- TEST 4: Post a Listing (as Farmer) ---
+1. Login as farmer (above)
+2. Click "Listings" in navbar
+3. Click "Post Your Crop" button
+4. Fill in crop, quantity, price and submit
+
+--- TEST 5: Buyer Login ---
+1. Logout, then Login with: company@demo.com / demo123
+2. Click "Buyers" and click "Post Requirement"
+
+=======================================================
+  STEP 7 — DAILY USAGE
+=======================================================
+
+Every time you want to run the project:
+
+  TERMINAL 1 (Backend):
+    cd backend
+    npm run dev
+
+  TERMINAL 2 (Frontend):
+    cd frontend
+    npm start
+
+Then open browser: http://localhost:3000
+
+=======================================================
+  TROUBLESHOOTING
+=======================================================
+
+PROBLEM: "npm is not recognized"
+SOLUTION: Node.js not installed properly. Restart computer
+          and repeat Step 1.
+
+PROBLEM: "Port 5000 already in use"
+SOLUTION: Open Task Manager → find "node.exe" → End Task
+          Then re-run: npm run dev
+
+PROBLEM: "Port 3000 already in use"
+SOLUTION: Type Y when React asks to use a different port,
+          OR close the other app using port 3000
+
+PROBLEM: Frontend shows "Network Error" or blank prices
+SOLUTION: Make sure backend is running (Terminal 1 shows
+          the green checkmark message)
+
+PROBLEM: npm install fails with permission error
+SOLUTION: Right-click VS Code → "Run as Administrator"
+
+PROBLEM: Module not found errors
+SOLUTION: Delete the "node_modules" folder and run
+          npm install again
+
+=======================================================
+  PROJECT STRUCTURE EXPLAINED
+=======================================================
+
+backend/
+  server.js   → All API routes (prices, listings, buyers, auth)
+  db.js       → Mock database with market data, crop prices
+  package.json → Backend dependencies
+
+frontend/src/
+  App.js              → Main app with all page routes
+  index.css           → All styling (design system)
+  pages/
+    Home.js           → Homepage with hero and features
+    Prices.js         → Market prices + charts + recommendation
+    Search.js         → Unified search page
+    Listings.js       → Farmer crop listings
+    Buyers.js         → Company/buyer directory
+    Dashboard.js      → Farmer dashboard
+    Auth.js           → Login and Register pages
+  components/
+    Navbar.js         → Top navigation bar
+  context/
+    AuthContext.js    → Login state management
+  utils/
+    api.js            → API connection helper
+
+=======================================================
+  FUTURE FEATURES YOU CAN ADD
+=======================================================
+
+1. Real database (MongoDB or MySQL)
+   → Replace db.js with actual database calls
+
+2. Real price API
+   → Connect to data.gov.in Agmarknet API for live prices
+
+3. SMS alerts
+   → Use Twilio to alert farmers when prices rise
+
+4. Multi-language support
+   → Add Kannada language option
+
+5. Map view
+   → Show markets on a map using Google Maps API
+
+6. Mobile app
+   → Convert to React Native for Android/iOS
+
+7. Photo uploads
+   → Let farmers upload crop photos with listings
+
+8. Admin panel
+   → Manage users, markets, and verify buyers
+
+=======================================================
+  DEMO ACCOUNTS
+=======================================================
+
+FARMER ACCOUNT:
+  Email:    farmer@demo.com
+  Password: demo123
+  District: Belagavi
+
+BUYER/COMPANY ACCOUNT:
+  Email:    company@demo.com
+  Password: demo123
+  Company:  FreshMart Foods Pvt Ltd
+
+=======================================================
+  SUPPORT
+=======================================================
+
+If you face any issues not listed above:
+1. Check that BOTH terminals are running
+2. Check browser console (press F12 → Console tab)
+3. Check the terminal for error messages
+
+Good luck with your AgriConnect project! 🌾

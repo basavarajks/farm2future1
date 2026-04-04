@@ -1,0 +1,6 @@
+node_modules/
+backend/data/db/
+backend/data/api_cache.json
+backend/.env
+.env
+*.log

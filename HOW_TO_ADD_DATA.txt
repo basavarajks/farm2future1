@@ -1,0 +1,233 @@
+========================================================
+  AgriConnect — How to Add More Data
+  CSV Files + Live API Key Setup Guide
+========================================================
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  PART 1: ADDING MORE CSV FILES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+STEP 1 — Download new CSV files from the official website:
+
+  Website : https://agmarknet.gov.in
+  OR      : https://data.gov.in/resource/current-daily-price-various-commodities-various-markets-mandi
+
+  On Agmarknet:
+    1. Go to https://agmarknet.gov.in
+    2. Click "Price Dissemination" in the menu
+    3. Select your State, District, Commodity, Date
+    4. Click "Go" to see prices
+    5. Click "Download" button → select CSV format
+    6. Save the file
+
+  On data.gov.in:
+    1. Go to https://data.gov.in
+    2. Search "mandi prices" or "daily price commodities"
+    3. Find the dataset "Current Daily Price of Various Commodities"
+    4. Click "Download" → CSV format
+    5. Save the file
+
+
+STEP 2 — Drop the CSV file into the correct folder:
+
+  The folder is:   agriconnect/backend/data/
+
+  Example:
+    agriconnect/
+    └── backend/
+        └── data/
+            ├── mandi_data_25mar2026.csv   ← already there
+            ├── mandi_data_26mar2026.csv   ← your new file
+            ├── mandi_data_27mar2026.csv   ← another file
+            └── karnataka_march2026.csv    ← any name is fine
+
+  ✅ You can drop ANY NUMBER of CSV files here.
+  ✅ Duplicate records (same market+crop+date) are automatically removed.
+  ✅ Files can be from different dates or different states.
+
+
+STEP 3 — Restart the backend:
+
+  In your backend terminal, press Ctrl+C to stop,
+  then run:
+    npm run dev
+
+  You will see all files listed:
+    ✅ Loaded 8000 records from mandi_data_25mar2026.csv
+    ✅ Loaded 7500 records from mandi_data_26mar2026.csv
+    📦 Total: 15500 records from 2 CSV files, 14200 after deduplication
+
+
+REQUIRED CSV FORMAT:
+  Your CSV must have these column headers (official Agmarknet format):
+  
+  State, District, Market, Commodity, Variety, Grade,
+  Arrival_Date, Min_x0020_Price, Max_x0020_Price, Modal_x0020_Price
+
+  Example row:
+  Karnataka,Mysuru,Mysuru APMC,Tomato,Hybrid,Grade A,25-03-2026,800,1600,1200
+
+  ✅ The loader handles BOM characters, Windows line endings, and
+     small variations in column name spacing automatically.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  PART 2: LIVE DAILY PRICE API (FREE)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+This connects to the official Indian Government mandi price API.
+Prices update automatically every day. No more downloading CSV!
+
+API Details:
+  Name    : Open Government Data Platform India
+  Website : https://data.gov.in
+  Cost    : 100% FREE
+  Limit   : 500 requests/day (enough for our use)
+  Data    : Same as the official Agmarknet mandi CSV
+
+
+STEP 1 — Register on data.gov.in:
+
+  1. Open your browser and go to:
+     https://data.gov.in
+
+  2. Click "Sign Up" in the top right corner
+
+  3. Fill in:
+     - Name
+     - Email address
+     - Password
+     - Select "Individual" as account type
+
+  4. Click "Register"
+
+  5. Check your email and click the verification link
+
+
+STEP 2 — Get your API Key:
+
+  1. After verifying email, log in to https://data.gov.in
+
+  2. Click your name/profile in the top right
+
+  3. Click "My Profile" or go to:
+     https://data.gov.in/user/me/api-keys
+
+  4. Click the button "Generate API Key"
+     (or "Create New Key")
+
+  5. You will see a long string like:
+     579b464db66ec23bdd000001cdd3e9a6bce4a0b37668d3b58b1d326f
+
+  6. Copy this key — you will need it in the next step
+
+
+STEP 3 — Add API Key to your project:
+
+  1. Open the file:
+     agriconnect/backend/.env.example
+
+  2. Rename it to:
+     agriconnect/backend/.env
+     (just remove the ".example" part)
+
+  3. Open the .env file in VS Code
+
+  4. Find this line:
+     DATA_GOV_API_KEY=
+
+  5. Paste your key after the = sign:
+     DATA_GOV_API_KEY=579b464db66ec23bdd000001cdd3e9a6bce4a0b37668d3b58b1d326f
+
+  6. Save the file
+
+
+STEP 4 — Restart the backend:
+
+  Press Ctrl+C in the backend terminal, then:
+    npm run dev
+
+  If the key is correct, you will see:
+    ✅ AgriConnect Backend running on http://localhost:5000
+    Live API : ✅ Enabled (data.gov.in)
+    🌐 Fetching live prices from data.gov.in API...
+    ✅ Fetched 8500 live records from API
+    💾 API data cached
+
+  ✅ Now the app has BOTH your CSV data AND today's live prices!
+  ✅ Live data refreshes automatically every 6 hours.
+  ✅ If the API is down, it falls back to your CSV data.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  PART 3: HOW IT ALL WORKS TOGETHER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+When the backend starts:
+
+  1. Reads ALL .csv files from /backend/data/ folder
+  2. Loads and merges them (removes duplicates)
+  3. If API key is set → fetches today's prices from data.gov.in
+  4. Merges API data with CSV data (API data shown with "🔴 Live" badge)
+  5. Every 6 hours → automatically fetches fresh prices from API
+
+  If API is down or key is wrong → app still works with CSV data
+  If no CSV files → app still works with API data only
+
+
+DATA FLOW:
+  /backend/data/*.csv  ──┐
+                          ├──→ Merged Dataset ──→ All API routes
+  data.gov.in API ────────┘
+
+
+FILE: /backend/data/api_cache.json
+  This file is created automatically when live API is used.
+  It stores the last API fetch so the app doesn't hit the API
+  every time a user visits. It expires after 6 hours.
+  You can safely delete it — it will be recreated.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  PART 4: OTHER API SOURCES (OPTIONAL)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+These are additional free data sources you can add later:
+
+1. AGMARKNET DIRECT API
+   Website  : https://agmarknet.gov.in
+   Register : Contact them at agmarknet@nic.in
+   Type     : Government API, free for research/agri use
+   Note     : More detailed data, some states have real-time prices
+
+2. eNAM (National Agriculture Market) API
+   Website  : https://enam.gov.in
+   Register : https://enam.gov.in/web/registration
+   Type     : Free API, covers 1000+ mandis
+   Data     : Live auction prices, trade volumes
+
+3. Kisan Suvidha App API
+   Website  : https://kisansuvidha.gov.in
+   Type     : Government, free
+   Data     : Market prices + weather + crop advisory
+
+4. NCML Spot Exchange
+   Website  : https://ncml.com
+   Type     : Commercial API (paid)
+   Data     : Commodity prices, futures, spot prices
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  QUICK REFERENCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Add new CSV data   → Drop file into /backend/data/ → restart backend
+  Add API key        → Edit /backend/.env → restart backend
+  Check data status  → Open http://localhost:5000/api/data-sources
+  Force API refresh  → Delete /backend/data/api_cache.json → restart backend
+
+  CSV download site  → https://agmarknet.gov.in
+  API key site       → https://data.gov.in/user/me/api-keys
+
+========================================================
