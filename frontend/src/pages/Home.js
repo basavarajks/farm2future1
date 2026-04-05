@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../utils/api';
 
 const features = [
   { icon: '📊', color: '#d4f5e4', title: 'Real Official Market Prices', desc: '8,000+ records from 900+ APMC markets across 24 states — sourced directly from Agmarknet. Updated daily.' },
@@ -14,7 +15,20 @@ const quickCrops = ['Tomato','Onion','Potato','Green Chilli','Garlic','Turmeric'
 
 export default function Home() {
   const [search, setSearch] = useState('');
+  const [stats, setStats] = useState({ totalRecords: '8,000+', totalStates: '24', totalCommodities: '217', latestDate: '25 March 2026', liveAPIEnabled: false });
   const navigate = useNavigate();
+
+  useEffect(() => {
+    api.get('/data-status').then(r => {
+      setStats({
+        totalRecords: r.data.totalRecords.toLocaleString(),
+        totalStates: r.data.totalStates,
+        totalCommodities: r.data.totalCommodities,
+        latestDate: r.data.latestDate,
+        liveAPIEnabled: r.data.liveAPIEnabled
+      });
+    }).catch(() => {});
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -63,7 +77,7 @@ export default function Home() {
             </div>
 
             <div className="hero-stat-row">
-              {[['8,000+', 'Real Price Records'], ['24', 'States Covered'], ['217', 'Crops & Commodities']].map(([n, l]) => (
+              {[[stats.totalRecords, 'Real Price Records'], [stats.totalStates, 'States Covered'], [stats.totalCommodities, 'Crops & Commodities']].map(([n, l]) => (
                 <div key={l}>
                   <div className="hero-stat-num">{n}</div>
                   <div className="hero-stat-label">{l}</div>
@@ -78,11 +92,11 @@ export default function Home() {
       <div style={{ background: 'var(--green-800)', padding: '14px 0' }}>
         <div className="container">
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap', color: 'var(--ink-200)', fontSize: 14 }}>
-            <span>📡 <strong style={{ color: 'var(--green-300)' }}>Official Data Source:</strong> Agmarknet — Ministry of Agriculture & Farmers Welfare, Government of India</span>
+            <span>{stats.liveAPIEnabled ? '📡 ' : '📄 '}<strong style={{ color: 'var(--green-300)' }}>{stats.liveAPIEnabled ? 'Live APIs + Archive DB:' : 'Official Data Source:'}</strong> {stats.liveAPIEnabled ? 'Agmarknet API Real-time Data' : 'Agmarknet — Ministry of Agriculture'}</span>
             <span style={{ color: 'rgba(255,255,255,0.2)' }}>|</span>
-            <span>📅 Last Updated: <strong style={{ color: 'var(--white)' }}>25 March 2026</strong></span>
+            <span>📅 Last Updated & Live Data: <strong style={{ color: 'var(--white)' }}>{stats.latestDate}</strong></span>
             <span style={{ color: 'rgba(255,255,255,0.2)' }}>|</span>
-            <span>✅ <strong style={{ color: 'var(--green-300)' }}>Free to use for all farmers</strong></span>
+            <span>{stats.liveAPIEnabled ? '🟢' : '✅'} <strong style={{ color: 'var(--green-300)' }}>{stats.liveAPIEnabled ? 'Live Syncing properly' : 'Free to use for all farmers'}</strong></span>
           </div>
         </div>
       </div>
@@ -131,6 +145,40 @@ export default function Home() {
                 <div style={{ color: 'var(--ink-500)', fontSize: 14 }}>{item.desc}</div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── CREATOR ─── */}
+      <section style={{ padding: '80px 0', background: 'var(--sand-50)' }}>
+        <div className="container text-center">
+          <h2 className="section-title" style={{ fontSize: 30, marginBottom: 40 }}>Meet the Creator</h2>
+          <div style={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center',
+            maxWidth: 500, margin: '0 auto', padding: '32px',
+            background: 'var(--white)', borderRadius: '24px',
+            boxShadow: '0 10px 40px -10px rgba(0,0,0,0.08)'
+          }}>
+            <img src="/creator.jpg" alt="Basavaraj" style={{
+              width: 120, height: 120, borderRadius: '50%', objectFit: 'cover',
+              border: '4px solid var(--white)', boxShadow: '0 4px 14px rgba(0,0,0,0.1)',
+              marginBottom: 16
+            }} />
+            <h3 style={{ fontSize: 22, fontFamily: 'var(--font-display)', marginBottom: 6, color: 'var(--ink-900)' }}>Basavaraj</h3>
+            <p style={{ color: 'var(--ink-500)', fontSize: 15, lineHeight: 1.6, marginBottom: 20 }}>
+              The creator of Farm2Future. Built with the vision to empower farmers with real-time market data across India and to facilitate direct, transparent trades between farms and businesses without middlemen.
+            </p>
+            <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+              <a href="https://www.linkedin.com/in/basavarajkb06?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noreferrer" style={{ color: '#0077b5', textDecoration: 'none', fontWeight: 600, fontSize: 15, display: 'flex', alignItems: 'center', gap: '5px', transition: '0.2s', padding: '6px 12px', background: 'rgba(0,119,181,0.1)', borderRadius: '8px' }}>
+                 LinkedIn
+              </a>
+              <a href="https://github.com/basavarajks" target="_blank" rel="noreferrer" style={{ color: '#333333', textDecoration: 'none', fontWeight: 600, fontSize: 15, display: 'flex', alignItems: 'center', gap: '5px', transition: '0.2s', padding: '6px 12px', background: 'rgba(51,51,51,0.1)', borderRadius: '8px' }}>
+                 GitHub
+              </a>
+              <a href="https://www.instagram.com/basavaraj_kb_06?igsh=dm11ajRsdGkxeGt2" target="_blank" rel="noreferrer" style={{ color: '#E1306C', textDecoration: 'none', fontWeight: 600, fontSize: 15, display: 'flex', alignItems: 'center', gap: '5px', transition: '0.2s', padding: '6px 12px', background: 'rgba(225,48,108,0.1)', borderRadius: '8px' }}>
+                 Instagram
+              </a>
+            </div>
           </div>
         </div>
       </section>

@@ -98,10 +98,26 @@ const store = {
     return state && _stateDistr[state] ? [..._stateDistr[state]].sort() : [];
   },
 
-  // Latest date across all records
-  latestDate() {
-    const dates = _records.map(r => r.date).filter(Boolean).sort();
-    return dates[dates.length - 1] || 'N/A';
+  // Latest date across all records (chronological sort)
+  latestDate(commodity, state) {
+    const rows = commodity ? this.query(commodity, state) : _records;
+    const dates = rows.map(r => r.date).filter(Boolean);
+    if (dates.length === 0) return 'N/A';
+
+    dates.sort((a, b) => {
+      const pA = a.split(/[-/]/);
+      const pB = b.split(/[-/]/);
+      if (pA.length === 3 && pB.length === 3) {
+        // Compare Year
+        if (pA[2] !== pB[2]) return parseInt(pA[2], 10) - parseInt(pB[2], 10);
+        // Compare Month
+        if (pA[1] !== pB[1]) return parseInt(pA[1], 10) - parseInt(pB[1], 10);
+        // Compare Day
+        return parseInt(pA[0], 10) - parseInt(pB[0], 10);
+      }
+      return a.localeCompare(b);
+    });
+    return dates[dates.length - 1];
   },
 
   // Breakdown by source file

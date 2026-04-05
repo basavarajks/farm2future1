@@ -256,7 +256,7 @@ function BuyerCard({ buyer }) {
           <div style={{ fontSize: 13, color: 'var(--ink-500)', textTransform: 'capitalize' }}>{buyer.buyerType}</div>
         </div>
       </div>
-      <div className="buyer-crops">{buyer.crops.map(c => <span key={c} className="crop-tag">{c}</span>)}</div>
+      <div className="buyer-crops">{buyer.commoditiesNeeded?.map(c => <span key={c} className="crop-tag">{c}</span>)}</div>
       <div style={{ fontSize: 13, color: 'var(--ink-500)', margin: '10px 0' }}>{buyer.description}</div>
       <div className="flex gap-8">
         <a href={`tel:${buyer.phone}`} style={{ flex: 1 }}><button className="btn btn-primary btn-sm w-full">📞 Call</button></a>
